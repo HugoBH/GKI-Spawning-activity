@@ -1,0 +1,334 @@
+---
+title: "Mismatch in the timing of peak coral trout spawning activity and fisheries closures on the Great Barrier Reef"
+author: "Harrison HB, Drane L, Cresswell B, Galbraith G, Mannering T, Srinivasan M, Taylor BM, Williamson DH, Jones GP"
+date: '`r format(Sys.Date())`'
+output: 
+  word_document:
+    fig_caption: yes
+    fig_height: 3.75
+    fig_width: 6
+    highlight: tango
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    df_print: default
+    fig_caption: yes
+    fig_height: 3.75
+    fig_width: 6
+    highlight: tango
+    latex_engine: xelatex
+    number_sections: yes
+    toc_depth: 2
+  html_document:
+    code_folding: show
+    collapse: no
+    df_print: paged
+    fig_caption: yes
+    fig_height: 3.75
+    fig_width: 6
+    highlight: textmate
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+    css: ../public/resources/ws_style.css
+output_dir: "docs"
+documentclass: article
+fontsize: 12pt
+mainfont: Arial
+mathfont: LiberationMono
+monofont: DejaVu Sans Mono
+classoption: a4paper
+bibliography: references.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
+---
+
+```{r settings, message=FALSE, echo=FALSE, warning=FALSE}
+library(knitr)
+source("scripts/SpT_00_packages.R")
+#rmarkdown::render("SpawningTimes_MS.Rmd", output_format = "word_document")
+emm_options(rg.limit = 20000)
+```
+
+NB. values are changing slightly as we update the growth models with the latest ageing data from Lachy
+
+NB. Lots of work to be done on the figures and caption
+
+Target Journals:Proc B., Journal of Applied Ecology, Limnology and Oceanography, Marine Biology,
+
+# Abstract
+
+Temporal patterns in spawning, settlement and early post-recruitment growth can have major effects on population size and the demographic structure of coral reef fishes. Variation in these patterns and the linkages among them are poorly understood. And yet, they are crucial in determining stock size and optimising management strategies of exploited species. In the commercially important coral trout (*Plectropomus* spp.), histological studies have typically suggested peak spawning around the summer new moons. Here we show that instead juvenile bar cheek coral trout (*P. maculatus*) in the southern Great Barrier Reef were spawned year round and short seasonal fisheries closures around the new moon can often miss peak spawning activity. We aged **619** juvenile *P. maculatus* collected from the Keppel Islands between 2007 and 2022 and estimated the spawning times of a further **1,144** individual to identify periods of peak spawning from juvenile fish (\<250 mm) that successfully recruited to the island group. Our findings indicate year-round spawning in distinctive recruitment cohorts that span several weeks to months. While spawning patterns were greater in summer, peak spawning varied between years with no clear association with lunar phases, sea surface temperature, or rainfall. As a result, the vast majority of juveniles were spawned outside seasonal fisheries closures of coral trout. Given the variability and uncertainty in peak spawning times, coral trout fisheries may benefit from additional and longer seasonal closures in order to maximise the recruitment contribution from these periods of greatest reproductive success.
+
+# Introduction
+
+Considerable attention has been given to understanding spatial variation in the recruitment of coral reef fishes and its impact on the distribution and abundance of a species (Caley et al., 1996; Doherty & Williams, 1988; Wen, et al., 2013a; Williams & Sale, 1981). Recruitment patterns can often vary substantially among locations leading to recruitment hotspots or places that consistently experience reliable levels of recruitment and high population densities (Booth et al., 2000; Eagle et al., 2012; C. K. C. Wen, Almany, et al., 2013). Such spatial heterogeneity in the recruitment of reef fishes is often driven by strong habitat preferences at the time of settlement to the reef (Booth & Beretta, 1994; Jones, 1991). And, for exploited species, spatial management strategies such as no-take marine reserves that target recruitment hotspots may be particularly effective in enhancing fish stocks (Wen et al., 2013b).
+
+In comparison, there have been fewer studies on temporal variation in the recruitment of coral reef fishes yet, it is known to be extremely variable among and within years (Williams, 1983; Williams & Sale, 1981; Sponaugle & Cowen, 1997a). Such variation can lead to fluctuations in adult population sizes and make fisheries stocks extremely unpredictable. The causes of fluctuations in recruitment can be driven in part by small variations in growth and survival during the larval stage, which has a huge impact on numbers reaching the critical size for recruitment to the reef (Jones, 1991). Partly, by temporal variation in larval supply from different source populations [@harrison2020]. Or partly, by the timing of spawning activity (Robertson, 1991). However, in general the causes of temporal variation in recruitment and how they impact post-recruitment processes are poorly understood.
+
+As most coral reef fishes have a restricted pelagic larval duration (PLD) (Brothers et al., 1983; Victor, 1986a; Wellington & Victor, 1989), temporal patterns in spawning are likely to be a major driver of temporal patterns in recruitment (Robertson et al., 1988; Sponaugle & Cowen, 1996, 1997b). On some low latitude coral reefs, fish spawn and recruit throughout the year (Srinivasan & Jones, 2006). However, most coral reef fishes exhibit distinct spawning seasons, which vary by regions and by latitudes, with shorter breeding seasons at high latitudes (Russell et al., 1977; Doherty, 1983; Robertson, 1990). Distinct spawning seasons also occur during months that maximise the survival and performance of their offspring (Johannes, 1978). A large proportion of coral reef fishes also exhibit distinct lunar spawning cycles within spawning seasons, often on new or full moons (Doherty, 1983; Johannes, 1978; Rankin & Sponaugle, 2014). And, synchronised spawning may occur at times that reduce predation on larvae or enhance reproductive success, which may enhance recruitment within spawning seasons (Robertson, 1991).
+
+Optimal spawning times may not always be predictable, though they can have important implications for larval and juvenile performance (Robertson, 1991). When spawning of marine fishes is synchronised with optimal conditions for larval growth and survival, recruitment may be high, while a mismatch may lead to poor recruitment (Cushing, 1990). These patterns are particular pronounced during lunar phases that can influence patterns of pre- and post-settlement growth and survivorship (Jones, 1986, 1987a, Rankin & Sponaugle, 2014; Shima & Swearer, 2019; Shima et al., 2020, 2021). The subsequent impact on fisheries can be important. For example, the Queensland Line Fishery (Reef) is subject to short seasonal closures based on the presumption of seasonal and lunar spawning of the common coral trout *Plectropomus leopardus* (Samoilys, 1997; Fox et al., 2022). Previously, all fishing activity was closed during three nine-day periods during the new moon phases of late spring and early summer (Oct-Dec) though legislation changed in **20??**, reducing the number and duration of fisheries closures two five-day periods during the same period. The temporal closure also applies to many other fishery species that form part of the Queensland Line Fishery (Reef) (Department of Agriculture Water and the Environment, 2021; Fox et al., 2022). It is not known whether all of these species exhibit the same seasonal and lunar spawning patterns, and so the effectiveness of the seasonal closure for the whole fishery has not been assessed. *when did legislation change + REF* **Lachy**
+
+The links between spawning activity and post-settlement recruitment are poorly understood, though they have clear implications for how fisheries are sustained. Direct observations of spawning activity are often difficult and the histological assessment of seasonal gonad development provides only limited indication of spawning activity and the frequency of spawning events. Meanwhile, recruitment activity can be detached from local spawning events due to post-settlement mortality and recruitment contributions from multiple source populations. However, peaks in recruitment activity and strong juvenile cohorts are indicative of successful spawning events and identifying the timing and environment cues for these events may improve fisheries management strategies. Here we used daily age estimates in juvenile coral trout (*P. maculatus*) from the Keppel Island to back-calculate the date of spawning of juveniles that have successfully settled and recruited to local reefs. From the age and growth rate of juvenile fish (\< 250 mm) we identified peaks in spawning activity across multiple years that we could relate to environmental conditions and investigate the effectiveness of spawning closures for coral trout fisheries on the GBR.
+
+# Methods
+
+## Study site and sample collection
+
+Juvenile *P. maculatus* were sampled from reefs throughout the Keppel Islands (23.18°S, 150.95°E) during three collection periods spanning 15 years (2007-2022), with 2-3 sampling trips within each period (Table S1). Fish up to 250 mm total length were collected on SCUBA using either spearguns or hand spears, with some smaller fish up to 50 mm collected using clove oil and hand nets. The fork length (FL) and total length (TL) of each fish was measured to the nearest millimetre and weighed to the nearest 0.1 gram.
+
+## Otolith preparation and age determination
+
+The sagittal otoliths were extracted from a subset of individuals from each collection period (Table S2) to estimate age and growth rates. The preparation of otoliths followed the methods described in Taylor et al. (2016) and were consistent with previous studies of early life history growth in *P. maculatus* from the southern GBR (Mannering, 2008; Williamson et al., 2016; Harrison et al., 2020). Briefly, one otolith from each juvenile fish was affixed to glass microscope slides using thermoplastic glue (Crystalbond 509), with the primordium (nucleus) on the inside edge of the slide and sulcus ridge perpendicular to the slide edge to obtain a transverse section of the sagittal otolith. Each otolith was ground to the edge of the slide using a GEMMASTA lapping wheel with a 1200 grit diamond sanding wheel to the edge of the slide. The otoliths were then removed and affixed to a clean labelled slide, with the ground surface down, and ground down using the same grit to a thin (≃600μm) transverse section that intercepts the nucleus. Successive polishing was then carried out with 9, 3 and 0.3 micron lapping film until daily growth increments (DGIs) were of optimal clarity. Sectioned otoliths were then coated in immersion oil and photographed under 200x and 400x magnification.
+
+The post settlement age of each fish was estimated through three independent counts of the DGIs, from the settlement mark to the outer edge along the ventral surface, following the longest plane. The final age was taken from the mean of the three counts, when each of the three counts were within 10% difference of the median. Samples with counts greater then 10% of the median were excluded from the analysis. To reduces the possibility of potential observer effects in counts, a sub-sample of 50 otoliths from each collection period were cross-validated and verified by the same observer (BMT) and found to be consistent between observers.
+
+**(UPDATE From Table S2)** In total, 619juveniles *P. maculatus* were aged, ranging from 23 mm to 248 mm in total length with a mean size of 117.9 mm (Table S2, Fig S1a). In addition, the pelagic larval durations (PLDs) were estimated for 64 individuals by counting daily age increments from the primordium to the settlement mark of the otolith (Fig S1b). Approximately 35% of all sampled fish were aged across all sampling periods (Fig S2) to account for variation in early growth between years.
+
+## Estimating the time of spawning
+
+We calculated the time of settlement of aged juveniles by substracting their measured post-settlement age from the date of collection and estimated the time of spawning by subtracting the mean PLD (27.77 days ± 1.6 days S.D.) from the date of settlement. Five discrete cohorts were then visually identified from the distribution of spawning times (Fig S3) to estimate growth rates and the time of spawning of un-aged juvenile fish up to 250 mm in total length. A generalised linear mixed effects model with a third order polynomial structure was used to model post-settlement age against total length with an error structure controlling for pre-defined cohorts (random effect) using the *glmmTMB* package in R (Brooks et al., 2017). The data fit the assumptions of the model with homogeneity of variance and no dispersion or outliers. To control heteroscedasticity in the residuals plots due to decreasing ageing precision with total length, we included a dispersion factor for length and cohort to minimise its effect on the model predictions. We used the modeled relationships for each cohort to predict the time of settlement of un-aged juvenile fish up to 250 mm in total length that were collected from the same cohorts (64% of the data). The time of settlement of individual that were collected outside of the modeled cohorts was estimated from the marginalised mean of all cohorts (FigS4). Finally, we subtracted the mean PLD from the time of settlement to estimate the time of spawning of each juvenile fish that successfully recruited to the island group.
+
+For all GLMMs, model residuals were inspected in the package *DHARMa* (Hartig, 2022) and checked for homogeneity of variance, dispersion, and outliers. Model predictions were performed and visualised with *emmeans* (Lenth, 2021) and *tidyverse* (Wickham et al., 2019), and summarised with *broom.mixed* (Bolker and Robinson, 2020). Where relevant, confidence intervals were based on a 95% significance level.
+
+## Temporal spawning patterns and triggers
+
+We used Generalized Additive Models (GAMs) within the package *mgcv* (Wood, 2006) to identify peak spawning times of juveniles *P. maculatus* in the Keppel islands for five austral years (July-June) for which our sampling regime would confidently identify periods with and without spawning. The number of fish spawned in 5-day windows were used as the response variable that assumed a tweedie error distribution with a logarithmic link-function to account for over-dispersion caused by periods with no spawning activity. The GAMs were tested for each austral year separately to a based on the following formula:
+
+$$y =\beta_0 + f(5~day~window) + \epsilon, ~~~~~~~ \epsilon \sim{} Tw_p(\mu, \sigma^2 )\\$$
+
+Where $\beta_0$ is the number of individuals spawned in a 5-day period and $f(Spawning~counts)$ indicate the additive smoothing functions of the annual trends in spawning. DHARMa residuals were checked for homogeneity of variance, dispersion, and outliers. Additional tests for zero inflation, overdispersion, and over-smoothing were performed to satisfy model fit. Model selection was informed from the Akaike information criterion (AICc) with the lowest score (Burnham and Anderson 2002). Spawning peaks were identified from model derivatives and plotted with partial residuals. All models and graphics were conducted within the R (R Core team 20??) statistical and graphical environment. The model predictions were use to identify peaks in spawning activity, the duration between peaks, and to quantify the likely contribution of spawning closures between October - December of each year.
+
+We also explored the environmental conditions associated with the number of successful spawning counts using GAMs that included lunar illumination, Sea Surface Temperature (SST), local rainfall and flood gauge data from the Fitzroy river as covariates. The number of individuals spawned were summed over 5-day periods to minimise the influence of zero-values in the data. Lunar illumination were averaged over the same 5-day period using the *lunar* package (Lazardis 2014) with a +10 hour shift to account for Australian Eastern Standard Time. SST values were produced with the Giovanni online data system, developed and maintained by the NASA GES DISC (Acker and Leptoukh 2007), which generates an 8-day average. Rainfall and flood data were generated from the Australian Government Bureau of Meteorology data portal.
+
+The number of individuals spawned in a 5-day period were used as the response variable for GAMs that assumed a tweedie error distribution with a logarithmic link-function to account for overdispersion caused by periods with no spawning activity. We explored models with a spline fitted to each covariate and the possible interaction between lunar phase and SST. Model selection was informed from the Akaike information criterion (AICc) and model fit. The best model included an interaction between SST and month, marginilised over years and was based on the following formula:
+
+$$y =\beta_0 + f(SST|Month) +\gamma_{year} + \epsilon, ~~~~~~~ \epsilon \sim{} Tw_p(\mu, \sigma^2 )\\$$
+
+Where $\beta_0$ is the number of individuals spawned in a 5-day period, $f(SST|Month)$ indicate the additive smoothing functions of the interaction between sea surface temperature and time of year (month), and $\gamma{year}$ indicates the random smoothing term of year. *Rainfall*, and *Lunar illumanitation* were not an important explanatory variables and were excluded from the model. *Flood Height* had a significant effect though showed high concurvivity with SST and month (0.77). DHARMa residuals were checked for homogeneity of variance, dispersion, and outliers. Additional tests for zero inflation, overdispersion, concurvity, and over-smoothing were performed to satisfy model fit.
+
+```{r note1, echo = FALSE,eval=FALSE}
+#Check out for writing out the model https://petolau.github.io/Analyzing-double-seasonal-time-series-with-GAM-in-R/
+
+#We further explored the relative importance of environmental factors in determining the timing of spawning events using GBMs using the package *gbm* (Greenwell et al. 2020). Our model include all four environmental covariates with the addition of year, using 10,000 trees and a thinning of 0.001, up to three splits in the trees, a bag fraction of 0.5 and 3 fold cross-validation. The 95 % confidence intervals around the relative influence of each model term were estimating by bootstrapping 20 times with replacement.
+```
+
+# Results
+
+## Temporal patterns in spawning activity
+
+By ageing juveniles *P. maculatus* under 250 mm (TL) collected from the Keppel Islands, we were able to back-calculate the time of spawning for juvenile fish that successfully settled to the island group and identify temporal patterns in spawning activity. Since our findings are based on the age of juvenile fish, they reflect the spawning activity that led to the successful recruitment of offspring in the Keppel Island and can not confirm that these pattern reflect all spawning activity that may have occurred in the Keppel Island or spawning that resulted in recruitment elsewhere. Nevertheless, we are confident that at least 50% of juvenile fish in the Keppel islands originate from adults in marine reserves that represent only 28% of all coral reef area in the island group [@harrison2012, @harrison2020], and the frequency sampling has capture an accurate representation of all spawning activity in the periods we report on. Over the course of three sampling periods between 2007-2022, we found spawning activity occurred year-round in distinct cohorts spanning periods of 1-4 month (Fig 1). However, the the timing of peak spawning activity was not consistent in each year indicating temporal fluctuations in spawning activity, providing the basis to investigate temporal patterns in spawning activity, the environmental conditions that may trigger spawning, and the effectiveness of spawning closures for coral trout in the Keppel Islands.
+
+Generalised Additive Models that included years centered on summer months, were fitted to the number of juvenile *P. maculatus* that were spawned and successfully recruited to the Keppel Islands in a 5-day window. The best fit GAM yielded robust diagnostics and explained at least 81 % of the null deviance depending in each year, indicating good model fits. All years showed evidence of a long-term non-linear trend in spawning and of similar and significant wiggliness (Table S4). The timing of peak spawning varied between years and ranged from August through to March. Each year presented one to three peaks in spawning, with distinct peaks separated by 26 to 129 days (Fig 1a). Peaks in spawning were of similar strength ranging from 14 to 31 juveniles successfully spawned in a 5-day window (mean: 22.0 95 % CI [16.8-28.8]) though ranged in their duration and thus their contribution to local recruitment in the Keppel Islands. Averaged across the five years, spawning occurred year round and although there appears to be an increase in spawning activity between October-December, the spawning patterns were too variable to confidently differentiate spawning activity between seasons.
+
+```{r Figure 2, echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 2. Predicted spawning activity that led to the successful recruitment of juveniles _P. maculatus_ in the Keppel Islands. In each 12-month period, lines and shaded areas represent the predicted number of individuals spawned in a 5-day window with 95% confidence. Point represent the observe data and white diamond identify peaks in spawning activity. Red bars indicate seasonal spawning closures"}
+load(file = "outputs/mod30.gam.spawning.peaks.RData")
+load(file = "outputs/mod30.spawning.peaks.RData")
+
+closures.1 = read.csv(file = "data/Closure_dates.csv", header = T) %>% 
+  mutate(DATE = as.Date(DATE, format = "%d/%m/%y"),
+         year = year(DATE),
+         month = month(DATE),
+         yday = yday(DATE),
+         austral.year = ifelse(month >= 7, 
+                               paste(year, year + 1,sep = "-"), 
+                               paste(year -1, year,sep = "-")),
+         adj.yday = if_else(yday >=183, yday -182, yday + 182)) %>% 
+  filter(year %in% c(2007, 2008, 2011, 2020, 2021)) %>% 
+  dplyr::select(austral.year, month, adj.yday, Status) %>% 
+  as_tibble()
+
+closures <- em.gam.year %>% unnest(emmeans) %>% 
+  dplyr::select(austral.year, response, adj.yday) %>% 
+  left_join(closures.1, by = c("austral.year", "adj.yday")) 
+
+#deviance explained
+#em.gam.year %>% dplyr::select(summary.df) %>% unnest(summary.df)
+
+Fig2a = ggplot(data = em.gam.year %>% unnest(emmeans), aes(y = response, x = adj.yday, label = austral.year)) +
+  geom_area(data = closures %>% filter(Status == "closed"), 
+            aes(y = 50, x = adj.yday, group = month), fill = "red", alpha = .2) +
+  geom_area(data = closures %>% filter(Status == "closed"), 
+            aes(y = response, x = adj.yday, group = month), fill = "red", alpha = .6) +
+  geom_ribbon(aes(ymin=lower.CL, ymax=upper.CL, fill = austral.year), alpha=0.3) + geom_line(aes(col = austral.year)) +
+  geom_point(data = em.gam.year %>% unnest(c(newdata, presid)) %>% 
+               mutate(Presid = exp(Pred) + Resid), 
+             aes(y = Presid, x = adj.yday, col = austral.year), alpha = .5, size = 1) +
+  geom_point(data = em.peaks, aes(y = response, x = adj.yday), 
+             col = "black", pch = 23, fill = "white") +
+  geom_text(data = with(em.gam.year, data.frame(austral.year = levels(austral.year), 
+                                                adj.yday = 320, response = 35)), hjust = 0, size = 3) +
+  scale_y_continuous(limits = c(NA,50), breaks = c(0,20,40)) +
+  scale_x_continuous(lim = c(1,361), expand = c(0,0),
+                     breaks = c(1, 32, 62, 92, 124, 154, 184, 214, 242, 277, 304, 333), 
+                     labels = c("Jul", "A", "S", "Oct", "N", "D", "Jan", "F", "M", "Apr", "M", "J")) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_color_brewer(palette = "Dark2") +
+  labs(y = "Successful spawning", x = "") +
+  facet_wrap(~austral.year, ncol = 1) +
+  theme_classic() + theme(strip.background = element_blank(),
+                     strip.text = element_blank(),
+                     axis.line = element_blank(),
+                     legend.position = "none",
+                     panel.border = element_rect(fill = NA),
+                     plot.margin = margin(2,2,0,4, unit = "pt"),
+                     axis.text.x = element_text(colour = c("black", NA, NA)))
+
+Fig2b = ggplot() +
+  geom_ribbon(data = em.gam.year %>% unnest(emmeans), 
+              aes(ymin=lower.CL, ymax=upper.CL, x = adj.yday, fill = austral.year), alpha=0.2) + geom_line() +
+  geom_line(data = em.gam.year %>% unnest(emmeans), 
+            aes(y = response, x = adj.yday, col = austral.year), alpha=0.1) +
+  #geom_point(data = em.gam.year %>% unnest(c(newdata, presid)) %>% mutate(Presid = exp(Pred) + Resid), 
+  #           aes(y = Presid, x = adj.yday), alpha = .5) +
+  geom_line(data = em.gam.year %>% unnest(emmeans) %>% group_by(adj.yday) %>% summarise(mean = mean(response)), 
+            aes(y = mean, x = adj.yday), lty = "dashed", size = 0.75) +
+  geom_point(data = em.peaks, aes(y = response, x = adj.yday, col = austral.year), 
+             pch = 23, fill = "white") +
+  scale_y_continuous(limits = c(NA,50), breaks = c(0,20,40)) +
+  scale_x_continuous(lim = c(1,361), expand = c(0,0),
+                     breaks = c(1, 32, 62, 92, 124, 154, 184, 214, 242, 277, 304, 333), 
+                     labels = c("Jul", "A", "S", "Oct", "N", "D", "Jan", "F", "M", "Apr", "M", "J")) +
+  scale_fill_brewer(palette = "Dark2") +
+  scale_color_brewer(palette = "Dark2") +
+  labs(y = "", x = "") +
+  theme_classic() + theme(strip.background = element_blank(),
+                     strip.text = element_blank(),
+                     axis.line = element_blank(),
+                     panel.border = element_rect(fill = NA), 
+                     legend.position = "none",
+                     legend.title = element_blank(),
+                     plot.margin = margin(0,2,0,4, unit = "pt"),
+                     axis.text.x = element_text(colour = c("black", NA, NA)))
+
+ggarrange(Fig2a, Fig2b, ncol = 1, heights = c(5,2),
+          labels = c("a)", "b)"), font.label = list(face = "plain", size = 11))
+```
+
+```{r peaks, echo=FALSE, eval = FALSE}
+# time between peaks (yday)
+em.peaks %>% group_by(austral.year) %>% 
+  mutate(gap = adj.yday-lag(adj.yday, 1))
+
+# strength of peaks
+em.peaks %>% ungroup() %>% summarise(mean(response), mean(lower.CL), mean(upper.CL))
+```
+
+## Environmental drivers of spawning activity
+
+We investigated the environmental conditions associated with spawning activity of *P. maculatus* in the Keppel Island and identified an important interaction between SST and time of year (month). Neither lunar illumination or rainfall captured variation in spawning activity whereas flood height was highly correlated with SST and time of year and were therefore excluded from the model. The best fit GAM included an interaction between SST and month marginalised over years, which yielded robust diagnostics and explained at least 74 % of the null deviance, indicating a good model fit. All years showed evidence of a long-term non-linear trend in spawning activity associated with sst throughout the year. When predicting spawning activity throughout the range of SST recorded in the Keppels it is possible to identify clear peaks in spawning activity. However, the results were not consistent between years suggesting other unknown factors may be influencing the timing of spawning activity of *P. maculatus* in the Keppel Island. When averaged across all years, the conditions associated with spawning activity are only very broadly associated with summer conditions.
+
+```{r Fig 3v3, echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 3. Spawning activity of of _P. maculatus_ in the Keppel Island was strongly associated with sea surface temperature and time of year, though trends were inconsistent between years."}
+load("outputs/dat21.spawning_5d_avg.Rdata")
+load(file = "outputs/mo31.gam.enviro_v3.Rdata")
+#summary(gam.env7)
+
+grid = with(dat.gam, list(sst = modelr::seq_range(sst, n = 50),
+                          adj.mnth = modelr::seq_range(adj.mnth, n = 50),
+                          austral.year = levels(austral.year)))
+
+newdata = emmeans(gam.env7, ~sst|adj.mnth|austral.year, at=grid, type='response') %>%
+  as.data.frame
+
+means = newdata %>% group_by(adj.mnth, sst) %>% 
+  summarise(response = mean(response)) %>% 
+  mutate(austral.year = "Average")
+
+Fig3 <- bind_rows(newdata, means) %>% 
+ ggplot(aes(y= sst, x= adj.mnth)) +
+  geom_tile(aes(fill=response)) +
+  geom_contour(aes(z=response), col = "black", bins = 15, size = .1) +
+  #scale_fill_gradientn(colors=heat.colors(10)) +
+  geom_point(data=dat.gam, aes(fill=count), shape=21, size=1, col = "white", stroke = .2) +
+  facet_grid(~austral.year) +
+  scale_fill_viridis_c() +
+  #scale_fill_gradientn(colours = rev(pal)) +
+  scale_x_continuous(expand = c(0,0), breaks = c(1,4,7,10), labels = c("Jul", "Oct", "Jan", "Apr")) +
+  scale_y_continuous(expand = c(0,0), breaks = seq(18, 29,2.5)) +
+  coord_fixed() +
+  labs(y = "SST ºC", x = "", fill = "Spawning activity") +
+  theme_classic() +
+  theme(strip.background = element_blank(),
+        #strip.text = element_blank(),
+        axis.line = element_blank(),
+        panel.border = element_rect(fill = NA), 
+        legend.position = "right") +
+  guides(fill = guide_colourbar(title.position = "right", barheight = 5.25, barwidth = .55, label.position = "right")) +
+  theme(legend.title = element_text(size = 9, angle = -90),
+        legend.text = element_text(size = 8),
+        legend.title.align = 0.5,
+        legend.direction = "vertical",
+        legend.margin = margin(0,.1,0,.5, unit = "mm"),
+        legend.background = element_rect(fill = "transparent", color = "transparent"),
+        legend.box.background = element_rect(fill = "transparent", color = "transparent"))
+
+Fig3
+```
+
+## Aligning seasonal fishing closures with spawning times
+
+```{r closures, echo=FALSE, eval=FALSE}
+closures %>% 
+  filter(month %in% c(10,11,12)) %>% 
+  group_by(Status, austral.year) %>% 
+  dplyr::summarise(sum = sum(response)) %>% 
+  spread(key = Status, value = sum) %>% 
+  mutate(percent = round(closed/open,3)*100)
+```
+
+Using the predicted spawning activity in each year (Fig 2), we explored how spawning activity aligned with fishery closures in each year. In 2007 and 2008, there were 27-days of spawning closures and 10-days in subsequent years -- assuming an equal probability of spawning, we would expect spawning closures to capture 29 % and 11 % of all spawning activity between October and December, respectively. However, temporal spawning patterns were highly variable during these periods (Fig 1). In 2007 and 2008, three 9-day spawning closures captured 41.5% and 21.2% of spawning activity, respectively. In 2011, 2020 and 2021, two 5-day spawning closures captured 1.4 %, 13.4 %, and 10.6 % of spawning activity, respectively. Spawning closures were not effective at capturing peak spawning activity between October - December, which represents only a fraction of all spawning that occurs year-round.
+
+We asked whether increasing the number and duration of spawning closures between October - December increases the likelihood of capturing a spawning event, thereby increasing the proportion of spawning activity protected by spawning closures in each year and reducing the volatility in their effectiveness. The interaction between the duration and the number of closures was not important, indicating that the effect of duration did not depend on the number of closures, and vice versa. When averaged across years, we found that 9-day closures around the new moon captured 1.86 times more spawning activity than 5-day closures (Tukey's: df = 28, t = 25.64, p \< 0.001, Table SX). Although the difference is significant, it is no more than the expected increase in spawning activity for the additional days of closure (9/5 = 1.8). The number of closures had a larger effect on capturing spawning activity (Table SX). On average, a single 5-day and 9-day closure in October captured 1.9% (95% CI [0.3-3.6]) and 3.6% (95% CI [0.5-6.7]) of all spawning activity between October-December respectively. The spawning activity captured increased by 218% with an additional closure in November (Tukey's: t = 2.46, p = 0.051) and by a further 105% with an additional closure in December (Tukey's: t = 2.51, p = 0.047). Collectively, the results suggest longer 9-day closures may not provide an overall net benefit beyond what would be expected for the duration of the closures and multiple closures may be more important to mitigate against the year-to-year volatility in spawning activity by increasing the likelihood of capturing spawning peaks.
+
+```{r closure duration, echo=FALSE, eval=FALSE}
+glm3 %>% emmeans(revpairwise~duration, type = "response")
+9/5
+```
+
+```{r closure 1, echo = FALSE, eval=FALSE}
+15.1/778
+28.2/778
+2/778
+28.3/778
+3.76/778
+52.5/778
+```
+
+```{r closure number, eval=FALSE, echo=FALSE}
+glm3 %>% emmeans(revpairwise~n|duration, type = "response")
+```
+
+```{r Fig 4, echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 4. The effectiveness of spawning closures depend on the timing and duration spawning activity a) The timing of five-day and nine-day closures  Spawning closures before 200  a) For each year, we asked how much spawning activity was captured by "}
+load("outputs/mod42_closure.glm.RData")
+ggarrange(closure.glm[[2]], closure.glm[[3]], widths =c(1,2), labels = c("a)", "b)"), font.label = list(face = "plain", size = 11))
+```
+
+# Discussion
+
+Daily age and size estimates of juvenile *Plectropomus maculatus* in the Keppel Islands over a 15-year period revealed several unexpected temporal patterns in spawning activity. Despite being a high latitude reef fish population, spawning occurred in all months of the year, with each sampling period showing broad summer and winter cohorts that varied in terms of their exact timing and duration. Unexpectedly, there was no effect of lunar patterns on spawning activity and we found no clear environmental cue at the onset of spawning peaks. Such lack of seasonality and asynchrony with lunar cycles in the spawning activity of *P. maculatus* suggest temporal spawning closures are not effectively protecting the spawning activity that led to successful recruitment in the Keppel Islands.
+
+It is evident that spawning of *P. maculatus* in the Keppel Islands is occurring year-round for periods of 2-3 months to generate distinct cohorts in the juvenile population. This was unexpected given histological assessments of seasonal gonad development suggest most coral reef fishes on the GBR have distinct spawning seasons, usually late spring to early summer (Robertson, 1991; Russell et al., 1977; Samoilys, 1997). The spawning patterns found in this study indicate *P. maculatus* contrasts with other reef fishes with restricted summer recruitment periods (Russell et al., 1977; Walsh, 1987; Williams, 1983; Williams & Sale, 1981) and other *Plectropomus* spp on the GBR. For example, *P. leopardus* and *P. laevis* both exhibit clear seasonal spawning in late spring and early summer on the central and northern GBR (Heupel et al., 2010; Samoilys, 1997). While our results were not corroborated with histological assessments of seasonal gonad development, we are confident the large majority of juveniles fish that successfully recruit to the Keppel Islands originate from local reefs (Harrison et al. 2012, 2020), and therefore representative of spawning activity throughout the year.
+
+Year-to-year variation in spawning activity with only a weak association with SST and the time of year indicates other mechanisms not captured in our model may be responsible for the temporal variation in spawning activity of *P. maculatus*. For example, survivorship of pre- and post- settlement larvae (Robertson, 1991) and fluctuations in the abundance of prey abundance throughout the year may lead to differential fitness of juvenile fish (Jones, 1986, 1987a). Juvenile *P. maculatus* consume small crustaceans and gobies (Wen et al., 2012; Wen et al., 2016), which may also fluctuate in abundance. Equally, adult *Plectropomus* spp are piscivirous (Hempson et al. 2017) and fluctuations in the availability of prey species for breeding female fish may lead to fluctuation in the timing and duration of spawning peaks.
+
+While spawning and recruitment of coral reef fishes often follow a lunar cycle (Doherty, 1983; Doherty et al., 1994; Johannes, 1978; Rankin & Sponaugle, 2014), this was clearly not the case for *P. maculatus* in the Keppel Islands. Lunar spawning offers a strong set of environmental cues for synchronising spawning across a population (Robertson, 1991), which has been documented for the closely related *P. leopardus* at Scott Reef on the GBR (Samoilys, 1997) and extended to *P. maculatus* (Frisch & Van Herwerden, 2006; Frisch et al., 2016). This assumption likely stem from the observation that *P. maculatus* occasionally appear in lunar spawning aggregations of *P. leopardus* (Frisch & van Herwerden, 2006). One hypothesis for the lack of lunar spawning may be due to the increased cost of spawning migrations for lunar cyclic spawning (Colin & Clavijo, 1988; Domeier & Colin, 1997). There have been no observations of spawning aggregations of *P. maculatus* in the Keppel Islands or movement between reefs. Individuals are likely to be spawning in small groups that would lead to the more continuous and unsynchronized spawning we observed. Another factor could be geographic variation in the propensity to exhibit lunar spawning patterns. Studies have demonstrated intraspecific variation in lunar spawning patterns in different areas (Doherty & Williams, 1988; Williams, 1983; Williams & Sale, 1981). Hence, the lack of lunar spawning in *P. maculatus* on the southern GBR may not mean this species does not exhibit lunar spawning patterns at lower latitudes.
+
+Temporal volatility in spawning activity have two clear implications for fisheries management. In the case of *P. maculatus* in the Keppel Islands, spawning closure did not effectively protect spawning activitue due to the lack of synchrony with the new moon and year-to-year variation in the timing of peak spawning activity. Temporal closures are implemented with the primary objective of protecting spawning aggregations, vulnerable to overfishing yet are likely too short or too few to effectively capture spawning activity. This suggests that the current temporal closures are too narrow or too few and it is likely that other species managed under the Queensland Line Fishery (Reef) will exhibit similar variation in spawning, warranting further investigation of spawning activity. Given the volatility in spawning activity, we show that increasing the number of spawning closures may provide greater benefits that increasing their duration in order to increase the likelihood of capturing peaks in spawning activity. However, these results may only be applicable for *P. maculatus* on the southern GBR and should not be taken as typical for other geographic locations or species.
+
+Daily ageing of juvenile *P. maculatus* in the Keppel Islands indicate strong variation in the timing of spawning beyond what was previously understood for coral reef fishes. To investigate these patterns further, consideration should be given to the experimental design to accurately assess spawning times of juvenile coral trout, the potential causes of temporal variation in spawning peaks, and whether the patterns observed in the Keppel Island are consistent throughout the GBR and for other congeners. An important caveat to this study is that our estimates of peak spawning activity are based on juvenile fish that successfully settled and recruited to the island group and may not be representative of all spawning in the region, particularly spawning that leads to unsuccessful recruitment. Although we are confident that our sampling design identified recruitment cohorts for the period that we investigated, there may have been additional cohorts in some year. Ideally, future studies would combine histological studies of seasonal gonad development, direct observations of spawning behaviour, followed by with recruitment surveys, and matched with parentage to provide a direct link between spawning and recruitment. On their own, each approach has offered insights into the behaviour (Samoilys et al. 1997), dispersal patterns (Harrison et al. 2012) and reproductive success (Lavin et al. 2021) of coral trout. When combined, these methods may offer important new insight into reproductive strategies and the ability to predict peak spawning periods in coral reef fish.
+
+# Conclusion
+
+Our findings highlight several unexpected temporal patterns in the spawning activity of *P. maculatus* in the Keppel Islands. In each year recruitment originated from several distinct cohorts with no consistent timing or environmental trigger and suggest a mismatch with management strategies that aim to protect peak spawning activity on the GBR. If species on the GBR have a bet hedging reproductive strategy or environmental conditions create volatility in their reproductive success, then fisheries management must adopt strategies that mitigate for these uncertainties. In the case of *P. maculatus* in the Keppel Islands, the current two times 5-day spawning closures were ineffective at protecting successful spawning activity and may need to be extended and/or multiplied to ensure adequate protection of spawning biomass. Alternatively, supplementing other management strategies such a no-take marine reserve and minimum size-limits may provide other benefits beyond what seasonal spawning closures can achieve.
+
+# Acknowledgement
+
+We acknowledge this research took place on the traditional land and sea country of the Woppaburra people and recognize their continuing connection to land, water, and community in the Keppel Islands. We thank our field assistants for support with sample collection and Murray Logan for his advice in fitting GAMs and GBMs to our data. This research was funded by the Australian Research Council (ARC) Discovery Grant to Geoffrey P Jones (DP190103056) with support from the ARC Centre of Excellence for Coral Reef Studies, the Australian Institute of Marine Science. This project was conducted under GBRMPA Marine Parks Permits, G06/17981.1, G11/33554.1, and G19/42938.1, Queensland General Fisheries permits; 87381, 148534, and 205353, and James Cook University animal ethics approvals, A1001, A1625, and A2657.
+
+# Author contribution
+
+All authors contributed to the study design, data collection and writing.
+
+# References
+
+J. G. Acker and G. Leptoukh, "Online Analysis Enhances Use of NASA Earth Science Data", Eos, Trans. AGU, Vol. 88, No. 2 (9 January 2007), pages 14 and 17, doi: 10.1029/2007EO020003

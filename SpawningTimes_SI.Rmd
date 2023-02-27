@@ -1,0 +1,327 @@
+---
+title: "Ageing of juvenile coral trout (Plectropomus maculatus) reveals year-round spawning and recruitment: implications for seasonal closures"
+author: "Harrison HB, Drane L, Cresswell B, Galbraith G, Mannering T, Srinivasan M, Taylor BM, Williamson DH, Jones GP"
+date: '`r format(Sys.Date())`'
+output:
+  word_document:
+    fig_caption: yes
+    fig_height: 3.75
+    fig_width: 6
+    highlight: tango
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    df_print: default
+    fig_caption: yes
+    fig_height: 3.75
+    fig_width: 6
+    highlight: tango
+    latex_engine: xelatex
+    number_sections: yes
+    toc_depth: 2
+  html_document:
+    code_folding: show
+    collapse: no
+    df_print: paged
+    fig_caption: yes
+    fig_height: 3.75
+    fig_width: 6
+    highlight: textmate
+    theme: spacelab
+    toc: yes
+    toc_float: yes
+    css: ../public/resources/ws_style.css
+output_dir: "docs"
+documentclass: article
+fontsize: 12pt
+mainfont: Arial
+mathfont: LiberationMono
+monofont: DejaVu Sans Mono
+classoption: a4paper
+bibliography: references.bib
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
+---
+
+```{r settings, echo = FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+source("scripts/SpT_00_packages.R")
+```
+
+# 1. Study site and sample collection
+
+```{r Table S1, echo = F, warning=FALSE, message=FALSE}
+load("outputs/dat20.spawning.times.RData")
+tableS1 = keppels.spawn.time %>% 
+  group_by(KI_period, trip) %>% 
+  summarise(`count` = n(),
+            `mean TL` = round(mean(tl, na.rm = T),1),
+            `min TL` = min(tl, na.rm = T),
+            `max TL` = max(tl, na.rm = T)) 
+
+kable(tableS1, caption = "Table S1 - Number and total length (TL) of juvenile _Plectropomus maculatus_ collected at the Keppel Island over the course of eight sampling trips between 2007 and 2022")
+```
+
+# 2. Otolith preparation and age determination
+
+```{r Table S2, echo=FALSE, warning=FALSE, message=FALSE}
+#table
+tableS2 <- keppels.spawn.time %>% 
+  filter(ageing == "aged") %>% 
+  group_by(KI_period, trip) %>% 
+  summarise(`count` = n(),
+            `mean TL` = round(mean(tl, na.rm = T),1),
+            `min TL` = min(tl, na.rm = T),
+            `max TL` = max(tl, na.rm = T)) 
+
+kable(tableS2, caption = "Table S2 - Number and total length (TL) of juvenile _Plectropomus maculatus_ aged from each sampling trip")
+```
+
+
+```{r Fig S1, echo = FALSE, warning=FALSE, message=FALSE, fig.cap="Figure S1. a) Size distribution of aged _P. maculatus_ at the Keppel Islands between 2007 and 2022. b) Distribution of pelagic larval durations.", fig.width= 7, fig.height= 7/1.6}
+load("outputs/dat01.keppels123_ageing.RData")
+load("outputs/dat01.keppels123_PLD.RData")
+
+## plot age
+age.plot = ggplot(ageing123 %>% filter(tl <= 250), aes(x = age_post)) +
+  geom_histogram(binwidth = 7, col = "white") +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(0,300,50), lim = c(NA, NA), expand = c(0,0)) +
+  theme_classic()+
+  labs(x ="Age (days)", y = "")
+
+## plot FL
+fl.plot = ggplot(ageing123 %>% filter(tl <= 250), aes(x = tl)) +
+  geom_histogram(binwidth = 10, col = "white") +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(0,300,50), lim = c(0, NA), expand = c(0,0)) +
+  theme_classic() +
+  labs(x ="Fork Length (mm)", y = "Number of samples")
+
+## plot PLD
+pld.plot = ggplot(PLD, aes(x = PLD)) +
+  geom_histogram(binwidth = 1, col = "white") +
+  scale_y_continuous(expand = c(0,0)) +
+  theme_classic()+
+  labs(x ="PLD (days)", y = "")
+
+ggarrange(fl.plot, pld.plot, nrow = 1, labels = c("a)", "b)"), font.label = list(face = "plain", size = 11))
+```
+
+
+
+```{r Fig S2, echo = FALSE, fig.cap="Figure S2. Size distribution of aged _P. maculatus_ at the Keppel Islands between 2007 and 2022 relative to the size distribution of all samples collected."}
+FigS2a <- ggplot(keppels.spawn.time, aes(x = fl, fill = ageing)) +
+  geom_histogram(binwidth = 10, col = "white") +
+  facet_wrap(~KI_period) +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(breaks = seq(0,300,50), lim = c(NA, NA), expand = c(0,0)) +
+  scale_fill_manual(values = c("lightblue4", "grey30")) +
+  theme_classic() +
+  theme(legend.position = c(.1,.85)) +
+  labs(x ="Fork Length (mm)", y = "Number of samples")
+
+FigS2b <- ggplot(keppels.spawn.time, aes(x = date_collect, fill = ageing)) +
+  geom_histogram(binwidth = 1) +
+  facet_grid( ~ trip, scales = "free_x", space = "free_x")+
+  #scale_x_date(breaks= date_breaks("3 months"), minor_breaks = date_breaks("months"), labels=date_format("%b %y"))+
+  scale_y_continuous(expand = c(0,0)) +
+  scale_fill_manual(values = c("lightblue4", "grey30")) +
+  labs(x = expression(paste('Collection date of' , italic (' P. maculatus'))), y ="Number of juveniles") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1),
+        strip.background = element_blank(),
+        #strip.text = element_blank(),
+        legend.position = "none", 
+        legend.title = element_blank()) 
+#ggarrange(, FigS2b, nrow = 2, labels = c("a)", "b)"), align = "hv")
+FigS2a
+```
+
+A large number of juvenile fish (<250 mm in total length) were aged from each sampling period. We were not able to retrieve additional samples from KI2 to supplement age estimates. 
+
+# 3. Analysis of early growth rates from recruitment cohorts
+
+```{r Fig S3, echo=FALSE, fig.cap="Figure S3. Estimated date of spawning of aged juvenile _P. maculatus_ at the Keppel Islands. Aged juveniles were grouped in predefined cohorts (G1-G6) to estimate age-growth relationships. 'NA' indicates juveniles not used to estimate age-growth relationships."}
+load("outputs/dat01.keppels123_ageing.RData")
+
+ageing123 = ageing123 %>% mutate(cohort = case_when(
+    (date_spawn >= as.Date("2007-09-01")) & (date_spawn <= as.Date("2008-03-31")) ~ "G1",
+    (date_spawn >= as.Date("2008-08-01")) & (date_spawn <= as.Date("2009-03-31")) ~ "G2",
+    (date_spawn >= as.Date("2011-12-01")) & (date_spawn <= as.Date("2012-07-31")) ~ "G3",
+    (date_spawn >= as.Date("2020-10-01")) & (date_spawn <= as.Date("2021-01-31")) ~ "G4",
+    (date_spawn >= as.Date("2021-02-01")) & (date_spawn <= as.Date("2021-08-15")) ~ "G5",
+    (date_spawn >= as.Date("2021-09-01")) & (date_spawn <= as.Date("2022-05-31")) ~ "G6"))
+
+ggplot(ageing123, aes(x = date_spawn, col = cohort, fill = cohort)) +
+  geom_histogram(binwidth = 7) +
+  facet_grid(. ~ KI_period, scales = "free_x", space = "free_x")+
+  scale_x_date(breaks= date_breaks("3 months"), 
+               minor_breaks = date_breaks("months"), labels=date_format("%b %y"))+
+  scale_y_continuous(expand = c(0,0)) +
+  labs(y = "Number of juveniles", x = "Spawning time") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1),
+        strip.background = element_blank(),
+        #strip.text = element_blank(), 
+        legend.position = "right") 
+```
+
+By combining the date of collection with the age of juvenile fish and the average PLD, we were able to estimate their time of spawning. Aged individuals belong to very distinct cohorts, as illustrated here. We measure growth rates for each of these cohorts to predict the time of spawning for other juvenile fish collected during the same period. 
+
+```{r Fig S4, echo = FALSE, fig.cap="Figure S4. Age-length relationship of juvenile _P. maculatus_ at the Keppel islands up to 250mm in total length from pre-defined cohorts (G1-G6, FigS3) sampled over multiple years."}
+load("outputs/mod10.growth.rates.RData")
+
+df = ageing123 %>% 
+  filter(tl <= 250) %>% 
+  filter(! is.na(cohort)) %>% 
+  mutate(cohort = factor(cohort))
+
+grid = with(df, list(tl = seq(min(tl),250,1)))
+
+growth.model %>% emmeans(~tl, at = grid, type ="response") %>% 
+  as.data.frame() %>% 
+  ggplot(aes(y = emmean, x = tl)) +
+  geom_point(data = df , aes(y = age_post, x = tl, color = cohort), alpha = 0.5) +
+  geom_ribbon(aes(ymin = lower.CL, ymax = upper.CL), alpha = .2) +
+  geom_line() +
+  labs(y = "Post-settlement age (days)", x = "Total length (mm)") +
+  theme_light() +
+  theme(legend.position = c(.905,.33))
+```
+
+```{r Table S3, echo = FALSE}
+library(broom)     #for tidy output
+library(broom.mixed)
+
+growth.model %>% tidy(effect='fixed', conf.int=TRUE) %>% kable(caption = "Table S3. Mixed effects growth model of juvenile _P. maculatus_ (<250 mm TL) AT the Keppel Islands marginalised over spawning cohorts between 2007 and 2022", digits = 1)
+```
+
+We observed small but significant variation in the growth of individuals between cohorts and so we must account for this when back calculating the time of spawning of each juvenile fish that was not aged directly. 
+
+```{r growth facts, echo=FALSE, eval = FALSE}
+predict(growth.model, newdata = data.frame(tl = 23, cohort = NA))
+# at 23mm, it's been on the reef for 14 days
+predict(growth.model, newdata = data.frame(tl = 15.28, cohort = NA), )
+# pelagic larvae settle at 15.2 mm? Plausible
+```
+
+Model estimates indicate _P. maculatus_ in the Keppel Island settled at approximately 15.3 mm TL and the smallest juvenile in our samples (23 mm) had settled 15 days prior to collection. 
+
+
+
+```{r Figure S5, echo=FALSE, fig.cap = "Figure S5. Spawning time of juvenile _P. maculatus_ collected at the Keppel Islands. Juvenile fish were collected during three sampling periods and the time of spawning estimated from growth rates and the pelagic larval duration. Sampling periods are indicated by a black line at the top of the figure plot.", out.width=600}
+
+load("outputs/dat20.spawning.times.RData")
+
+ggplot(keppels.spawn.time, aes(x = date_spawn)) + #fill = as.factor(month)
+  geom_histogram(binwidth = 5) +
+  geom_point(aes(x = date_collect, y = 45), shape = 15, fill = "black") +
+  facet_grid( ~ KI_period, scales = "free_x", space = "free_x") +
+  scale_x_date(breaks= date_breaks("3 months"), minor_breaks = date_breaks("3 months"), labels=date_format("%b %y"))+
+  #scale_fill_manual(values = c("grey20","grey30","grey40","grey50","grey60","grey70",
+                               #"grey80","grey70","grey60","grey50","grey40","grey30")) +
+  scale_y_continuous(expand = c(0,0), limits = c(0,50)) +
+  labs(x = expression(paste('Estimated spawn date of' , italic (' P. maculatus'))), y ="Number of juveniles") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1),
+        strip.background = element_blank(),
+        strip.text = element_blank(), 
+        legend.position = "none") 
+```
+Using the model estimates, we can back-calculate the time of spawning for all juvenile _P. maculatus_ at the Keppels that were not aged directly. We see clear cohorts within each year and spawning year-round. Horizontal black bars indicate the dates samples were collected. 
+
+
+# 4. General additive models of spawning time
+
+```{r Table S4, echo=FALSE, message=FALSE, warning=FALSE}
+load("outputs/mod30.gam.spawning.peaks.RData")
+em.gam.year %>% dplyr::select(austral.year, gam) %>% mutate(tidy = map(gam, ~tidy(.))) %>% 
+  unnest(tidy) %>% dplyr::select(-gam, - term) %>% kable(caption = "Generalised Additive Models that included years centered on summer months, were fitted to the number of juvenile *P. maculatus* that were spawned and successfully recruited to the Keppel Islands in a 5-day window")
+```
+
+Significant wiggliness simply suggests there are peaks in spawning
+
+# 5. Environmental drivers of coral trout spawning
+```{r Fig S6, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="Figure S6. Putative drivers of spawning", out.width=600, fig.height= 6}
+load("outputs/dat21.spawning_5d_avg.Rdata")
+
+dat.gam = dat.gam %>% 
+  mutate(yday = yday(date),
+         month = month(date),
+         year = year(date),
+         austral.year = factor(austral.year)) %>% 
+  mutate(adj.yday = if_else(yday >=183, yday -182, yday + 182),
+         num.year = as.numeric(austral.year)) %>% 
+  ungroup() %>% droplevels() %>% 
+  mutate(Dt.num=decimal_date(date)) %>% 
+  mutate(sSST = scale(sst)) 
+
+plot.illum = ggplot(dat.gam, aes(y = illum, x = adj.yday)) +
+  geom_line(col = "grey") +
+  geom_point(aes(col = count), alpha = .8) +
+  scale_x_continuous(breaks = c(1, 92,184,277), labels = c("Jul", "Oct", "Jan", "Apr")) +
+  facet_wrap(austral.year~., ncol = 1) +
+  theme_light() +
+  labs(y = "Lunar illumination fraction", x = "", col = "Spawning\nactivity") +
+  theme(strip.background = element_blank(), 
+        strip.text = element_blank()) +
+  scale_color_viridis_c() +
+  theme(legend.position = "right")
+
+plot.sst = ggplot(dat.gam, aes(y = sst, x = adj.yday)) +
+  geom_point(aes(col = count), alpha = .8) +
+  facet_wrap(austral.year~., ncol = 1) +
+  scale_x_continuous(breaks = c(1, 92,184,277), labels = c("Jul", "Oct", "Jan", "Apr")) +
+  scale_y_continuous(breaks = seq(18,30, 4)) +
+  theme_light() +
+  labs(y = "SST ºC", x = "", col = "Spawning\nactivity") +
+  theme(strip.background = element_blank(), 
+        strip.text = element_blank()) +
+  scale_color_viridis_c() +
+  theme(legend.position = "none")
+
+plot.rain <- ggplot(dat.gam, aes(y = rain, x = adj.yday)) +
+  geom_point(aes(col = count), alpha = .8) +
+  facet_wrap(austral.year~., ncol = 1) +
+  scale_x_continuous(breaks = c(1, 92,184,277), labels = c("Jul", "Oct", "Jan", "Apr")) +
+  theme_light() +
+  labs(y = "Rainfall (mm)", x= "", col = "Spawning\nactivity") +
+  theme(strip.background = element_blank(), 
+        strip.text = element_blank()) +
+  scale_color_viridis_c() +
+  theme(legend.position = "none")
+
+plot.flood <- ggplot(dat.gam, aes(y = flood, x = adj.yday)) +
+  geom_point(aes(col = count), alpha = .8) +
+  facet_wrap(austral.year~., ncol = 1) +
+  scale_x_continuous(breaks = c(1, 92,184,277), labels = c("Jul", "Oct", "Jan", "Apr")) +
+  theme_light() +
+  labs(y = "Flood gauge level", x = "", col = "Spawning\nactivity") +
+  theme(strip.background = element_blank(), 
+        strip.text = element_blank()) +
+  scale_color_viridis_c() +
+  theme(legend.position = "none")
+
+
+ggarrange(plot.illum, plot.sst, plot.rain, plot.flood, common.legend = TRUE, legend = "right", align = "hv") 
+```
+The environmental data shows no obvious relationship to spawning. 
+
+```{r Table S5, echo=FALSE, message=FALSE, warning=FALSE}
+load(file = "outputs/mo31.gam.enviro_v3.Rdata")
+gam.env7 %>% tidy %>% mutate(term = gsub("sst,adj.mnth", "SST,Month", term),
+                             term = gsub(":austral.year", ":", term),
+                             term = gsub("austral.year", "Year", term)) %>% 
+  kable(caption = "Generalised Additive Models that included an important interaction between SST and time of year (month), were fitted to the number of juvenile *P. maculatus* that were spawned and successfully recruited to the Keppel Islands in a 5-day window")
+```
+
+
+
+# 6. Closure model
+```{r Table S6, echo=FALSE, message=FALSE, warning=FALSE}
+load("outputs/mod42_closure.glm.RData")
+dat.glm1 = closure.glm[[4]]
+#Table
+closure.glm[[1]] %>% tidy(effect='fixed', conf.int=TRUE) %>% kable(caption = "Generalised linear mixed effects models of spawning activity of _P. maculatus_ captured by putative spawning closures on the Great Barrier Reef")
+```
+
