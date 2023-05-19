@@ -26,16 +26,29 @@ keppels.spawn.time %>% group_by(austral.year) %>%
   summarise(n = n()) %>% 
   filter(n <= 5)
 
-keppels.spawn.time <- keppels.spawn.time %>% 
-  filter(! austral.year %in% c("2006-2007", "2010-2011", "2012-2013","2019-2020")) %>% 
+# this will remove the following individuals:
+temp <- keppels.spawn.time %>% 
+  filter(austral.year %in% c("2006-2007", 
+                             "2010-2011", 
+                             "2012-2013",
+                             "2019-2020")) %>% 
   droplevels()
+
+# removes 83 individuals from further analyses
+keppels.spawn.time <- keppels.spawn.time %>% 
+  filter(! austral.year %in% c("2006-2007", 
+                               "2010-2011", 
+                               "2012-2013",
+                               "2019-2020")) %>% 
+  droplevels()
+
 
 ggplot(keppels.spawn.time, aes(x = date_spawn, fill = as.factor(month))) +
   geom_histogram(binwidth = 4) +
   geom_point(data = keppels.spawn.time, aes(y = 0, x = date_collect), col = "black", shape = 15, show.legend = F) +
   facet_grid( ~ austral.year, scales = "free_x", space = "free_x")+
-  scale_x_date(breaks= date_breaks("4 months"), 
-               minor_breaks = date_breaks("months"), labels=date_format("%b %y"))+
+  #scale_x_date(breaks= date_breaks("4 months"), 
+  #             minor_breaks = date_breaks("months"), labels=date_format("%b %y"))+
   scale_y_continuous(expand = c(0,0)) +
   labs(x = expression(paste('Spawning date of' , italic (' P. maculatus'))), y ="Number of juveniles") +
   theme_light() +

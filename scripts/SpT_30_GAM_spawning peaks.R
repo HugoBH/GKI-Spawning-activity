@@ -140,13 +140,10 @@ em.peaks = em.peaks %>% group_by(austral.year) %>%
     em.peaks %>% filter(austral.year == "2008-2009", adj.yday >= 50) %>% 
       arrange(-response) %>% top_n(n = 1)) %>% 
   bind_rows(
-    em.peaks %>% filter(austral.year == "2011-2012", adj.yday >= 180 & adj.yday <= 200) %>% 
-      arrange(-response) %>% top_n(n = 1)) %>% 
-  bind_rows(
     em.peaks %>% filter(austral.year == "2011-2012", adj.yday >= 200) %>% 
       arrange(-response) %>% top_n(n = 1)) %>% 
   bind_rows(
-    em.peaks %>% filter(austral.year == "2020-2021", adj.yday >= 160) %>% 
+    em.peaks %>% filter(austral.year == "2020-2021", adj.yday <= 200) %>% 
       arrange(-response) %>% top_n(n = 1)) %>% 
   arrange(austral.year)  
   
@@ -158,7 +155,7 @@ ggplot(data = em.gam.year %>% unnest(emmeans), aes(y = response, x = adj.yday ))
   geom_point(data = em.gam.year %>% unnest(c(newdata, presid)) %>% 
                mutate(Presid = exp(Pred) + Resid), 
              aes(y = Presid, x = adj.yday), alpha = .5) +
-  geom_point(data = em.peaks, aes(y = response, x = adj.yday), col = "blue", alpha =.5) +
+  geom_point(data = em.peaks, aes(y = response, x = adj.yday), col = "red", alpha =.5) +
   #geom_point(data = dat.gam, aes(y = count, x = adj.yday), col = "red", alpha =.5) +
   theme_bw()
 #END

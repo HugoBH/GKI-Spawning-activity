@@ -95,7 +95,7 @@ AIC(m1, m2, m3)
 simulateResiduals(m1) %>% plot
 ## greater variance in higher age class than in lower tl. overall pretty good. 
 
-## Marginalisation to help deal with Heteroscedasticity
+## Marginalisation and dispersion factor to help deal with Heteroscedasticity
 ## Dispersion is associated by tl, and perhaps differently for each cohort
 m4 <- glmmTMB(age_post ~ tl + (1|cohort), data = df, dispformula = ~ tl, REML = TRUE)
 m5 <- glmmTMB(age_post ~ tl + (0 + tl|cohort), data=df, dispformula = ~ tl, REML = TRUE)
@@ -147,21 +147,21 @@ AIC(m9,m12,m14,m15)
 growth.model = glmmTMB(age_post ~ poly(tl,3) + (tl|cohort), dispformula = ~tl*cohort, 
                        data = df, 
                        REML = TRUE)
+
 AIC(m9,m12,m14,m15, growth.model)
 
 resids <- simulateResiduals(growth.model)
 plot(resids)
 testDispersion(growth.model)
 summary(growth.model)
+#The residual vs predicted plots are not perfect. I suggest the accuracy of counts decreases with larger ages.
+#That's difficult to deal with but the dispersion factor seems to help. 
 
 
 save(growth.model, file = "outputs/mod10.growth.rates.RData")
 
 
-
-
-
-#If you want to see the curve for each cohort, you have to run a separate model
+#We can visualise the model.
 ggpredict(growth.model, terms = "tl [all]") %>% plot (add.data = TRUE) 
 
 
@@ -175,8 +175,11 @@ growth.model %>% emmeans(~tl, at = grid, type ="response") %>%
   labs(y = "Post-settlement age (days)", x = "Total length (mm)") +
   theme_light()
 
+#I'm not sure how we can visualise the random effect, but these will be accounted for when predicting the age of juvenile fish.
 ranef(growth.model)  
 
+
+#If you want to see the curve for each cohort, you have to run a separate model
 m16 <- glmmTMB(age_post ~ poly(tl,3) + cohort, data=df, dispformula = ~ tl*cohort, REML = F)
 
 AIC(growth.model, m16)

@@ -4,8 +4,9 @@ load(file = "outputs/mod30.spawning.peaks.RData")
 
 #deviance explained
 em.gam.year %>% dplyr::select(summary.df) %>% unnest(summary.df)
+#The explanory power of the GAMs if good
 
-
+#We can visualise the spawning activities across years...
 closures.1 = read.csv(file = "data/Closure_dates.csv", header = T) %>% 
   mutate(DATE = as.Date(DATE, format = "%d/%m/%y"),
          year = year(DATE),
@@ -45,7 +46,7 @@ ggplot(data = em.gam.year %>% unnest(emmeans), aes(y = response, x = adj.yday, l
                           strip.text = element_blank(),
                           axis.line = element_blank(),
                           panel.border = element_rect(fill = NA))
-
+#...and see that the closures don't align well with the peak. 
 
 
 #Would 9-day closures be better than 5 day closures
@@ -72,7 +73,7 @@ dat.1 %>%
 #seems like marginal gains and no more than expected
 
 
-###############
+## Are longer closures better?
 #Compare the effect of 5 vs 9 day closures
 df = closures %>% 
   filter(month %in% c(10,11,12)) %>% 
@@ -116,6 +117,8 @@ ggplot(trout, aes(y = value, x = duration, group = closure, col = austral.year))
   geom_line() + geom_point() +
   facet_wrap(~legis, scale = "free_x")
 
+
+
 #random slope for each closure, random intercept
 #control = glmmTMBControl(optimizer = "optim",optArgs = "BFGS"))
 #+ offset(days)
@@ -152,15 +155,17 @@ my.glm %>% ggpredict() %>%
   plot(add.data = TRUE)
 
 my.glm %>% emmeans(revpairwise~duration, type = "response") 
-#glm.p0 currently in use.
+#Longer closures are better but not more than what you would expect...
 
 
 
-#What about the number, do we get better chance of landing on peak if we have more closures
+
+##What about the number, do we get better chance of landing on peak if we have more closures
 df = closures %>% 
   filter(month %in% c(10,11,12)) %>% 
   group_by(austral.year, month, Status) %>% 
   mutate(n = ifelse(Status == "closed", 1:n(), 0))
+  
 
 #what would 5 day closures be?
 df.1 <- df %>% filter(austral.year %in% c("2007-2008", "2008-2009")) %>% 
@@ -195,16 +200,26 @@ p1 = bind_rows(df.1, df.2) %>% ungroup() %>% droplevels() %>%
     facet_wrap(~austral.year, ncol = 1) + 
     scale_y_continuous(limits = c(NA,40), breaks = c(0,20,40)) +
     scale_x_continuous(breaks = c(92,123, 153, 184), labels = c("Oct", "Nov", "Dec", "Jan")) +
-    labs(y = "Successful spawning", x = "") +
+    labs(y = "Spawning activity", x = "") +
     facet_wrap(~austral.year, ncol = 1) +
     theme_classic() + theme(strip.background = element_blank(),
                             strip.text = element_blank(),
                             axis.line = element_blank(),
                             panel.border = element_rect(fill = NA))
+p1
+#Seems to be working... 
 
 
+## Integrating duration and frequency of closures into a model
+#Getting the observations into percent, so we can calculate the proportion of spawning activity protected by each closures
+#Adding an identifier for 5 and 9 day closures around the new moon in each year.
 trout <- bind_rows(df.1, df.2) %>% ungroup() %>% droplevels() %>% 
   mutate(closure = ifelse(nine.day ==1, paste(austral.year, month, sep = "_"), NA)) %>% 
+  #turn into percentage
+  group_by(austral.year) %>% 
+  mutate(season.sum = sum(response)) %>% 
+  mutate(response = response / season.sum) %>% 
+  #remove no closure days
   filter(!is.na(closure)) %>% 
   mutate(five.day = ifelse(five.day ==1, response, NA),
          nine.day = ifelse(nine.day ==1, response, NA)) %>% 
@@ -216,155 +231,74 @@ trout <- bind_rows(df.1, df.2) %>% ungroup() %>% droplevels() %>%
   ungroup() %>% 
   mutate_if(is.character, as.factor) %>% 
   mutate(legis = factor(legis, levels = c("Before", "After")),
-         s.value = round(value,0))
+         s.value = round(value,3))
 
 
 
-##############
-sum.5cv <- trout %>% group_by(austral.year) %>% 
-  filter(duration == "sum5") %>% 
-  mutate(n = 1:n()) %>% 
-  select(austral.year, n, value) %>% 
-  spread(key = n, value = value) %>% 
-  mutate(var2 = var(c(`1`,`2`)),
-         mean2 = mean(c(`1`,`2`)),
-         se2 = sd(c(`1`,`2`))/ sqrt(2),
-         sum2 = sum(c(`1`,`2`)),
-         sum5.cv2 = sd(c(`1`,`2`))/ abs(mean(c(`1`,`2`)))) %>% 
-  mutate(var3 = var(c(`1`,`2`,`3`)),
-         mean3 = mean(c(`1`,`2`,`3`)),
-         se3 = sd(c(`1`,`2`,`3`))/ sqrt(3),
-         sum3 = sum(c(`1`,`2`,`3`)),
-         sum5.cv3 = sd(c(`1`,`2`,`3`))/ abs(mean(c(`1`,`2`,`3`)))) 
-
-glm1.dat<- sum.5cv %>% select(austral.year, sum2, sum3) %>% 
-  gather(key = key, value = value, -austral.year)
-glm1 <- glmmTMB(value ~ key + (1|austral.year), data = glm1.dat, REML = TRUE, family = "gaussian")
-glm2 <- glmmTMB(round(value,0) ~ key + (1|austral.year), data = glm1.dat, REML = TRUE, family = poisson())
-AIC(glm1, glm2)
-resid <- glm1 %>% simulateResiduals(plot = TRUE)
-glm1 %>% ggpredict() %>%plot(add.data = TRUE)
-glm1 %>% emmeans(revpairwise~key, type = "response") 
-#the third closure increases the protection of 
-
-sum.9cv <- trout %>% group_by(austral.year) %>% 
-  filter(duration == "sum9") %>% 
-  mutate(n = 1:n()) %>% 
-  select(austral.year, n, value) %>% 
-  spread(key = n, value = value) %>% 
-  mutate(var2 = var(c(`1`,`2`)),
-         mean2 = mean(c(`1`,`2`)),
-         sum2 = sum(c(`1`,`2`)),
-         sum9.cv2 = sd(c(`1`,`2`))/ abs(mean(c(`1`,`2`)))) %>% 
-  mutate(var3 = var(c(`1`,`2`,`3`)),
-         mean3 = mean(c(`1`,`2`,`3`)),
-         sum3 = sum(c(`1`,`2`,`3`)),
-         sum9.cv3 = sd(c(`1`,`2`,`3`))/ abs(mean(c(`1`,`2`,`3`)))) 
-
-glm1.dat<- sum.5cv %>% select(austral.year, sum2, sum3) %>% 
-  gather(key = key, value = value, -austral.year)
-glm1 <- glmmTMB(value ~ key + (1|austral.year), data = glm1.dat, REML = TRUE, family = gaussian)
-resid <- glm1 %>% simulateResiduals(plot = TRUE)
-#Partial plots
-glm1 %>% ggpredict() %>%plot(add.data = TRUE)
-glm1 %>% emmeans(revpairwise~key, type = "response") 
-
-library(ggdist) #median hdci
-sum.5cv %>% select(austral.year, sum5.cv2, sum5.cv3) %>% 
-  left_join(sum.9cv %>% select(austral.year, sum9.cv2, sum9.cv3)) %>% 
-  ungroup() %>% 
-  select(-austral.year) %>% 
-  gather() %>% group_by(key) %>% 
-  summarise_all(median_hdci) %>% 
-  separate(key, into = c("days", "n"), sep = "\\.") %>% 
-  
-  ggplot(aes(y = value$y, x = n, ymin= value$ymin, ymax = value$ymax))+
-  geom_pointrange() +
-  facet_wrap(~days) +
-  labs(x = "",  y = "Volatility (meanCV ± 1SD)") +
-  theme(legend.position = "none", plot.margin = unit(c(2,1,0,6), "mm"))
-
-#mean and sd
-sum.5cv %>% select(austral.year, sum5.cv2, sum5.cv3) %>% 
-  left_join(sum.9cv %>% select(austral.year, sum9.cv2, sum9.cv3)) %>% 
-  ungroup() %>% 
-  select(-austral.year) %>% 
-  gather() %>% group_by(key) %>% 
-  group_by(key) %>% 
-  summarise_all(list(mean = mean, sd = sd)) %>% 
-  
-  ggplot(aes(y = mean, x = key, ymin= mean -sd, ymax = mean+sd))+
-  geom_pointrange()
-
-sum.5cv %>% select(austral.year, var2, mean2, var3, mean3) %>% 
-  ggplot() +
-  geom_point(aes(y = var2, x = mean2), col = "red") +
-  geom_point(aes(y = var3, x = mean3)) +
-  facet_wrap(~austral.year)
-
-
-
-
-
-# this is the bit that goes in the paper
 dat.glm1 = trout %>% ungroup() %>% 
   group_by(duration, austral.year) %>% 
   mutate(n = 1:n(),
          count.dec = cumsum(value),
-         count = round(cumsum(value),0),
+         #rounding for poisson...
+         count = round(cumsum(value)*100,0),
          n = factor(n))
+
 glm1 <- glmmTMB(count.dec ~ duration + n + (1|austral.year), data = dat.glm1, REML = TRUE, family = "gaussian")
 glm2 <- glmmTMB(count.dec ~ duration * n + (1|austral.year), data = dat.glm1, REML = TRUE, family =  "gaussian")
 glm3 <- glmmTMB(count ~ duration + n + (1|austral.year/n), data = dat.glm1, REML = TRUE, family = poisson())
 glm4 <- glmmTMB(count ~ duration * n + (1|austral.year/n), data = dat.glm1, REML = TRUE, family = poisson())
-AIC(glm1, glm2, glm3, glm4)
+glm5 <- glmmTMB(count.dec ~ duration + n + (1|austral.year), data = dat.glm1, REML = TRUE, family = beta_family())
+glm6 <- glmmTMB(count.dec ~ duration * n + (1|austral.year), data = dat.glm1, REML = TRUE, family =  beta_family())
+AIC(glm1, glm2, glm3, glm4, glm5, glm6)
+summary(glm6) #interactions not important.
 
-resid <- glm3 %>% simulateResiduals(plot = TRUE)
+resid <- glm5 %>% simulateResiduals(plot = TRUE)
+#Looks great
+
 #Partial plots
-glm3 %>% ggpredict(~duration|n) %>% plot(add.data = TRUE)
-glm3 %>% emmeans(~duration|n, type = "response")  
+glm5 %>% ggpredict(~duration|n) %>% plot(add.data = TRUE)
+glm5 %>% emmeans(~duration|n, type = "response")  
 
-glm3 %>% ggemmeans(~n|duration)  %>% plot
-glm3 %>% emmeans(revpairwise~n|duration, type = "response")
+glm5 %>% ggemmeans(~n|duration)  %>% plot
+glm5 %>% emmeans(revpairwise~n|duration, type = "response")
 
-glm3 %>% emmeans(revpairwise~duration, type = "response")
+glm5 %>% emmeans(revpairwise~duration, type = "response")
 
 
 #Table
-glm3 %>% sjPlot::tab_model(show.se = TRUE, show.aic = TRUE)
+glm5 %>% sjPlot::tab_model(show.se = TRUE, show.aic = TRUE)
 
 #plot
 grid <- with(dat.glm1, list(duration = levels(duration),
                             n = levels(n)))
-newdata = glm3 %>% emmeans(~n|duration, at = grid, type = "response") %>% 
+newdata = glm5 %>% emmeans(~n|duration, at = grid, type = "response") %>% 
   as.data.frame() %>% 
   mutate(duration = ifelse(duration == "sum5", "5-day closure", "9-day closure"))
 
-p2 = ggplot(data = newdata, aes(y = rate, x = n)) +
-  geom_pointrange(aes(ymin = lower.CL, ymax = upper.CL, col = duration), position = position_dodge(width = 0.4)) +
+p2 = ggplot(data = newdata, aes(y = response, x = n)) +
+  geom_pointrange(aes(ymin = asymp.LCL, ymax = asymp.UCL, col = duration), position = position_dodge(width = 0.4)) +
   geom_point(data = dat.glm1 %>% 
                mutate(duration = ifelse(duration == "sum5", "5-day closure", "9-day closure")), 
              aes(y = count.dec, x = n, col = duration), position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.1), alpha = .5) +
   scale_color_manual(values = c("red", "pink")) +
-  labs(y = "Cumulative spawning activity", x= "Number of closures") +
+  scale_y_continuous(label = scales::percent) +
+  labs(y = "Percent spawning\nactivity captured", x= "Number of seasonal closures") +
   theme_classic() +
-  theme(legend.position = c(.15,.85),
+  theme(legend.position = c(.18,.88),
         legend.title = element_blank(),
         legend.background = element_rect(fill = "transparent")) +
   theme(axis.line = element_blank(),
-      panel.border = element_rect(fill = NA))
+        panel.border = element_rect(fill = NA))
 
-closure.glm = list(glm3, p1,p2, dat.glm1)
-save(closure.glm, file = "outputs/mod42_closure.glm.RData")
+p2
 
-#total spawning average
-closures %>% 
-  filter(month %in% c(10,11,12)) %>% 
-  group_by(austral.year) %>% 
-  summarise(sum = sum(response)) %>% 
-  summarise(mean = mean(sum))
+glm5 %>% emmeans(revpairwise~duration, type = "response")
+glm5 %>% emmeans(revpairwise~duration|n, type = "response")
+glm5 %>% emmeans(revpairwise~n, type = "response")
 
 
+closure.glm = list(glm5, p1, p2, dat.glm1)
+save(closure.glm, file = "outputs/mod41_closure.glm.RData")
 
-
-
+Fig3 <- ggarrange(closure.glm[[2]], closure.glm[[3]], widths =c(1,2), labels = c("a)", "b)"), font.label = list(face = "plain", size = 11))
+Fig3

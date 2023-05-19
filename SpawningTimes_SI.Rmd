@@ -270,13 +270,13 @@ plot.illum = ggplot(dat.gam, aes(y = illum, x = adj.yday)) +
 
 plot.sst = ggplot(dat.gam, aes(y = sst, x = adj.yday)) +
   geom_point(aes(col = count), alpha = .8) +
-  facet_wrap(austral.year~., ncol = 1) +
+  facet_grid(austral.year~.) +
   scale_x_continuous(breaks = c(1, 92,184,277), labels = c("Jul", "Oct", "Jan", "Apr")) +
   scale_y_continuous(breaks = seq(18,30, 4)) +
   theme_light() +
   labs(y = "SST ºC", x = "", col = "Spawning\nactivity") +
   theme(strip.background = element_blank(), 
-        strip.text = element_blank()) +
+        strip.text = element_text(color = "black")) +
   scale_color_viridis_c() +
   theme(legend.position = "none")
 
@@ -293,17 +293,18 @@ plot.rain <- ggplot(dat.gam, aes(y = rain, x = adj.yday)) +
 
 plot.flood <- ggplot(dat.gam, aes(y = flood, x = adj.yday)) +
   geom_point(aes(col = count), alpha = .8) +
-  facet_wrap(austral.year~., ncol = 1) +
+  facet_grid(austral.year~.) +
   scale_x_continuous(breaks = c(1, 92,184,277), labels = c("Jul", "Oct", "Jan", "Apr")) +
   theme_light() +
   labs(y = "Flood gauge level", x = "", col = "Spawning\nactivity") +
   theme(strip.background = element_blank(), 
-        strip.text = element_blank()) +
+        strip.text = element_text(color = "black")) +
   scale_color_viridis_c() +
   theme(legend.position = "none")
 
 
 ggarrange(plot.illum, plot.sst, plot.rain, plot.flood, common.legend = TRUE, legend = "right", align = "hv") 
+ggsave("Fig S6.png", dpi = 300, width = 15, height = 20, units = "cm")
 ```
 The environmental data shows no obvious relationship to spawning. 
 
@@ -319,9 +320,12 @@ gam.env7 %>% tidy %>% mutate(term = gsub("sst,adj.mnth", "SST,Month", term),
 
 # 6. Closure model
 ```{r Table S6, echo=FALSE, message=FALSE, warning=FALSE}
-load("outputs/mod42_closure.glm.RData")
+load("outputs/mod41_closure.glm.RData")
 dat.glm1 = closure.glm[[4]]
 #Table
-closure.glm[[1]] %>% tidy(effect='fixed', conf.int=TRUE) %>% kable(caption = "Generalised linear mixed effects models of spawning activity of _P. maculatus_ captured by putative spawning closures on the Great Barrier Reef")
+library(broom.mixed)
+closure.glm[[1]] %>% tidy(effect='fixed', conf.int=TRUE, exponentiate = TRUE) %>% kable(caption = "Generalised linear mixed effects models of spawning activity of _P. maculatus_ captured by putative spawning closures on the Great Barrier Reef")
+
+
 ```
 

@@ -34,7 +34,7 @@ pred.df = DB.KI %>% dplyr::select(id, year, date_collect,  KI_period, region, re
     (date_collect >= ageing.cohorts$min.date[5]) & (date_collect <= ageing.cohorts$max.date[5]) ~ "G5",
     (date_collect >= ageing.cohorts$min.date[6]) & (date_collect <= ageing.cohorts$max.date[6]) ~ "G6"))
     
-## We've aged 39% of the data
+## We've aged 43% of the data
 nrow(ageing123) / nrow(pred.df)
 ## thus predicting 65% of the data
 
