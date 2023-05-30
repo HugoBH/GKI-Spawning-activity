@@ -40,7 +40,7 @@ ggplot(data = em.gam.year %>% unnest(emmeans), aes(y = response, x = adj.yday, l
                                                 adj.yday = 320, response = 35)), hjust = 0, size = 3) +
   scale_y_continuous(limits = c(NA,50), breaks = c(0,20,40)) +
   scale_x_continuous(breaks = c(1, 92,184,277), labels = c("Jul", "Oct", "Jan", "Apr")) +
-  labs(y = "Successful spawning", x = "") +
+  labs(y = "Number of successfully spawned individuals", x = "") +
   facet_wrap(~austral.year, ncol = 1) +
   theme_classic() + theme(strip.background = element_blank(),
                           strip.text = element_blank(),
@@ -193,21 +193,26 @@ df.2$nine.day[rep(which(df.2$nine.day == 1), each=9L) + -4:4] <- 1
 p1 = bind_rows(df.1, df.2) %>% ungroup() %>% droplevels() %>% 
   mutate(five.day = ifelse(five.day ==1, response, NA),
          nine.day = ifelse(nine.day ==1, response, NA)) %>% 
+  separate(austral.year, c("year1", "year2"), remove = F) %>% 
   ggplot() +
-    geom_line(aes(y = response, x = adj.yday), size = 2) +
-    geom_line(aes(y = nine.day, x = adj.yday), col = "pink", size = 2.1) +
-    geom_line(aes(y = five.day, x = adj.yday), col = "red", size = 2.2) +
+    geom_line(aes(y = response, x = adj.yday), size = 1.2) +
+    geom_line(aes(y = nine.day, x = adj.yday), col = "pink", size = 1.3) +
+    geom_line(aes(y = five.day, x = adj.yday), col = "red", size = 1.4) +
+    geom_text(data = data.frame(austral.year = c("2007-2008", "2008-2009", "2011-2012", "2020-2021", "2021-2022"), 
+                                year1 = c("2007", "2008", "2011", "2020", "2021")), 
+              aes(label = year1, x = 170, y = 35), hjust = 0, size = 2.5) +
     facet_wrap(~austral.year, ncol = 1) + 
     scale_y_continuous(limits = c(NA,40), breaks = c(0,20,40)) +
     scale_x_continuous(breaks = c(92,123, 153, 184), labels = c("Oct", "Nov", "Dec", "Jan")) +
-    labs(y = "Spawning activity", x = "") +
+    labs(y = "Number of successfully\nspawned individuals", x = "") +
     facet_wrap(~austral.year, ncol = 1) +
     theme_classic() + theme(strip.background = element_blank(),
                             strip.text = element_blank(),
                             axis.line = element_blank(),
+                            panel.spacing = unit(4, "mm"),
                             panel.border = element_rect(fill = NA))
 p1
-#Seems to be working... 
+
 
 
 ## Integrating duration and frequency of closures into a model
@@ -282,7 +287,7 @@ p2 = ggplot(data = newdata, aes(y = response, x = n)) +
              aes(y = count.dec, x = n, col = duration), position = position_jitterdodge(dodge.width = 0.4, jitter.width = 0.1), alpha = .5) +
   scale_color_manual(values = c("red", "pink")) +
   scale_y_continuous(label = scales::percent) +
-  labs(y = "Percent spawning\nactivity captured", x= "Number of seasonal closures") +
+  labs(y = "Percent spawning\nactivity captured", x= "Number of spawning closures") +
   theme_classic() +
   theme(legend.position = c(.18,.88),
         legend.title = element_blank(),
@@ -302,3 +307,6 @@ save(closure.glm, file = "outputs/mod41_closure.glm.RData")
 
 Fig3 <- ggarrange(closure.glm[[2]], closure.glm[[3]], widths =c(1,2), labels = c("a)", "b)"), font.label = list(face = "plain", size = 11))
 Fig3
+
+ggsave(filename = "figures/Fig3_predictors of spawning activity.tiff", plot = Fig3, dpi = 300, width = 17, height = 7, units = "cm")
+

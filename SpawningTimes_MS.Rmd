@@ -170,7 +170,7 @@ Fig1a = ggplot(data = em.gam.year %>% unnest(emmeans), aes(y = response, x = adj
                      labels = c("Jul", "A", "S", "Oct", "N", "D", "Jan", "F", "M", "Apr", "M", "J")) +
   scale_fill_brewer(palette = "Dark2") +
   scale_color_brewer(palette = "Dark2") +
-  labs(y = "Spawning activity", x = "") +
+  labs(y = "Number of successfully\nspawned individuals", x = "") +
   facet_wrap(~austral.year, ncol = 1) +
   theme_classic() + theme(strip.background = element_blank(),
                      strip.text = element_blank(),
@@ -197,7 +197,7 @@ Fig1b = ggplot() +
                      labels = c("Jul", "A", "S", "Oct", "N", "D", "Jan", "F", "M", "Apr", "M", "J")) +
   scale_fill_brewer(palette = "Dark2") +
   scale_color_brewer(palette = "Dark2") +
-  labs(y = "", x = "") +
+  labs(y = "\n", x = "") +
   theme_classic() + theme(strip.background = element_blank(),
                      strip.text = element_blank(),
                      axis.line = element_blank(),
@@ -211,6 +211,8 @@ Fig1 <- ggarrange(Fig1a, Fig1b, ncol = 1, heights = c(5,2),
           labels = c("a)", "b)"), font.label = list(face = "plain", size = 11))
 Fig1
 ggsave(filename = "figures/Fig1_Temporal spawning patterns.png", plot = Fig1, dpi = 300, width = 16, height = 10, units = "cm")
+ggsave(filename = "figures/Fig1_Temporal spawning patterns.tiff", plot = Fig1, dpi = 300, width = 16, height = 10, units = "cm")
+
 ```
 
 ```{r peaks, echo=FALSE, eval = FALSE}
@@ -274,6 +276,7 @@ Fig2 <- bind_rows(newdata, means) %>%
 
 Fig2
 ggsave(filename = "figures/Fig2_predictors of spawning activity.png", plot = Fig2, dpi = 300, width = 15, height = 4, units = "cm")
+ggsave(filename = "figures/Fig2_predictors of spawning activity.tiff", plot = Fig2, dpi = 300, width = 15, height = 4, units = "cm")
 ```
 
 ## Aligning seasonal fishing closures with spawning times
@@ -290,30 +293,13 @@ closures %>%
 Using the predicted spawning activity in each year (Fig 1), we explored how spawning activity aligned with seasonal closures. In 2007 and 2008, there were 27-days of closures and 10-days in subsequent years – assuming an equal daily probability of spawning, we would expect seasonal closures to capture 29 % and 11 % of all spawning activity between October and December, respectively. However, temporal spawning patterns were highly variable during these periods (Fig 3a). In 2007 and 2008, three 9-day spawning closures captured 41.5% and 20.9% of spawning activity, respectively. In 2011, 2020 and 2021, two 5-day spawning closures captured 1.2 %, 13.5 %, and 10.0 % of spawning activity, respectively. Spawning closures were not effective at capturing peak spawning activity between October - December, which represents only a fraction of all spawning that occurs year-round.
 We investigated whether increasing the number and duration of spawning closures between October - December increases the likelihood of a closure coinciding with capturing a spawning event, thereby increasing the proportion of spawning activity protected by spawning closures in each year. The interaction between the duration and the number of closures was not important, indicating that the effect of duration did not depend on the number of closures, and vice versa. Across years, we found that 9-day closures around the new moon captured 1.9 times more spawning activity than 5-day closures (Tukey's: df = 28, t = 3.304, p = 0.001, Table S5). Although the difference is significant, it is no more than the expected increase in spawning activity for the additional days of closure (9/5 = 1.8). The number of closures had a larger effect on capturing spawning activity (Fig 3b, Table S5). On average, a single 5-day and 9-day closure in October captured 3.2% (95% CI [1.8-5.5]) and 5.9% (95% CI [3.6-9.7]) of all spawning activity between October-December, respectively. The spawning activity captured by closures increased by 189% with an additional closure in November (Tukey's: t = 3.61, p < 0.001) and by a further 118% with an additional closure in December (Tukey's: t = 3.50, p < 0.01). Collectively, longer 9-day closures may not yield an overall net benefit beyond what would be expected for the duration of the closures and multiple closures may be more effective in mitigating the annual and monthly volatility in spawning activity by increasing the likelihood of capturing peaks in successful spawning activity.
 
-```{r closure duration, echo=FALSE, eval=FALSE}
-load("outputs/mod41_closure.glm.RData")
-glm5 %>% emmeans(revpairwise~duration, type = "response")
-9/5
-```
-
-```{r closure 1, echo = FALSE, eval=FALSE}
-15.1/778
-28.2/778
-2/778
-28.3/778
-3.76/778
-52.5/778
-```
-
-```{r closure number, eval=FALSE, echo=FALSE}
-glm5 %>% emmeans(revpairwise~n|duration, type = "response")
-```
 
 ```{r Fig 3, echo=FALSE, message=FALSE, warning=FALSE, fig.cap = "Figure 3. The effectiveness of spawning closures depends on the timing and duration of spawning activity of P. maculatus at the Keppel Islands. a) The timing of five-day (red) and nine-day (pink) seasonal closures coinciding with the new moon capture different periods of spawning activity from October to December in each year. b) The percent spawning activity protected when we increased the number and duration of spawning closures between October - December increases the likelihood of capturing a spawning event, thereby increasing the proportion of spawning activity protected by spawning closures in each year and reducing the volatility in their effectiveness."}
 load("outputs/mod41_closure.glm.RData")
 Fig3 <- ggarrange(closure.glm[[2]], closure.glm[[3]], widths =c(1,2), labels = c("a)", "b)"), font.label = list(face = "plain", size = 11))
 Fig3
 ggsave(filename = "figures/Fig3_predictors of spawning activity.png", plot = Fig3, dpi = 300, width = 17, height = 7, units = "cm")
+ggsave(filename = "figures/Fig3_predictors of spawning activity.tiff", plot = Fig3, dpi = 300, width = 17, height = 7, units = "cm")
 ```
 
 # Discussion
